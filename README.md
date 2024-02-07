@@ -6,4 +6,4 @@ Made with ReactJs, ShadcnUI, RadixUI
 
 ---
 
-Happy Coding ❤
+# {}
