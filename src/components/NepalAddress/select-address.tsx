@@ -13,7 +13,7 @@ export default function SelectAddress() {
 		district?: string;
 		municipality?: string;
 		ward?: string;
-	}>();
+	}>({ province: "", district: "", municipality: "" });
 
 	return (
 		<div>
@@ -70,6 +70,15 @@ export default function SelectAddress() {
 						type="number"
 						disabled={!data?.municipality}
 						value={data?.ward || ""}
+						onBlur={() => {
+							const value = Number(data?.ward);
+							if ((value && value < 0) || value > 50) {
+								setData(({ ward, ...prev }) => ({
+									...prev,
+								}));
+								return;
+							}
+						}}
 						onChange={(e) =>
 							setData((prev) => ({
 								...prev,
