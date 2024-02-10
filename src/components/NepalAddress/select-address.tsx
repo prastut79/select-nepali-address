@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import { SelectDistrict } from "./select-district";
 import { SelectMunicipality } from "./select-municipality";
 import { Label } from "../ui/label";
+import { SelectWard } from "./select-ward";
 
 export default function SelectAddress() {
 	const [data, setData] = React.useState<{
@@ -13,13 +14,13 @@ export default function SelectAddress() {
 		district?: string;
 		municipality?: string;
 		ward?: string;
-	}>({ province: "", district: "", municipality: "" });
+	}>();
 
 	return (
 		<div>
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
 				<SelectProvince
-					data={ADDRESS_DATA.provinceList}
+					data={ADDRESS_DATA.province_list}
 					value={data?.province}
 					onValueChange={(province) => setData({ province })}
 				/>
@@ -27,9 +28,9 @@ export default function SelectAddress() {
 				{/* {data?.province && ( */}
 				<SelectDistrict
 					data={
-						ADDRESS_DATA.provinceList.find(
+						ADDRESS_DATA.province_list.find(
 							(province) => province.name === data?.province
-						)?.districtList
+						)?.district_list
 					}
 					onValueChange={(district) =>
 						setData((prev) => ({
@@ -44,11 +45,11 @@ export default function SelectAddress() {
 
 				<SelectMunicipality
 					data={
-						ADDRESS_DATA.provinceList
+						ADDRESS_DATA.province_list
 							.find((prov) => prov.name === data?.province)
-							?.districtList?.find(
+							?.district_list?.find(
 								(dis) => dis.name === data?.district
-							)?.municipalityList!
+							)?.municipality_list!
 					}
 					onValueChange={(municipality) =>
 						setData((prev) => ({
@@ -60,33 +61,26 @@ export default function SelectAddress() {
 					value={data?.municipality || ""}
 					disabled={!data?.district}
 				/>
-				<div className="space-y-1">
-					<Label htmlFor="ward">Ward No.</Label>
-					<Input
-						id="ward"
-						placeholder="no."
-						min={1}
-						max={50}
-						type="number"
-						disabled={!data?.municipality}
-						value={data?.ward || ""}
-						onBlur={() => {
-							const value = Number(data?.ward);
-							if ((value && value < 0) || value > 50) {
-								setData(({ ward, ...prev }) => ({
-									...prev,
-								}));
-								return;
-							}
-						}}
-						onChange={(e) =>
-							setData((prev) => ({
-								...prev,
-								ward: e.target.value,
-							}))
-						}
-					/>
-				</div>
+				<SelectWard
+					wards={
+						ADDRESS_DATA.province_list
+							.find((prov) => prov.name === data?.province)
+							?.district_list?.find(
+								(dis) => dis.name === data?.district
+							)
+							?.municipality_list?.find(
+								(mun) => mun.name === data?.municipality
+							)?.wards!
+					}
+					disabled={!data?.municipality}
+					onValueChange={(ward) =>
+						setData((prev) => ({
+							...prev,
+							ward,
+						}))
+					}
+					value={data?.ward || ""}
+				/>
 			</div>
 			{Object.keys(data || {}).length === 4 && (
 				<p className="text-center text-xl font-bold py-12 ">{`${data?.municipality} - ${data?.ward}, ${data?.district}, ${data?.province}, Nepal `}</p>
