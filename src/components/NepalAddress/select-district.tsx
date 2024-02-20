@@ -9,7 +9,6 @@ import {
 
 import { Label } from "../ui/label";
 import { SelectProps } from "@radix-ui/react-select";
-
 interface SelectDistrict extends SelectProps {
 	data?: { id: string; name: string }[];
 }
